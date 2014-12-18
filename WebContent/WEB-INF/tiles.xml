@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE tiles-definitions PUBLIC  
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"  
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">  
+<tiles-definitions>
+    
+    <!-- MENU -->
+    <definition name="header.get" template="/WEB-INF/layouts/header_layout.jsp">
+        <put-attribute name="body" value="/WEB-INF/pages/header.jsp" />  
+    </definition>
+    
+    <!-- FOOTER -->
+    <definition name="footer.get" template="/WEB-INF/layouts/footer_layout.jsp">
+        <put-attribute name="body" value="/WEB-INF/pages/footer.jsp" />  
+    </definition>
+    
+    <!-- BASE TEMPLATE -->
+    <definition name="base.definition" template="/WEB-INF/layouts/base_layout.jsp">  
+        <put-attribute name="title" value="" />  
+        <put-attribute name="header" value="/header" /> 
+        <put-attribute name="body" value="" />  
+        <put-attribute name="footer" value="/footer" />  
+    </definition>  
+  
+    <!-- ESTATISTICAS GET PAGE -->
+    <definition name="estatisticas.get" extends="base.definition">  
+        <put-attribute name="title" value="Pesquisar Equipas" />  
+        <put-attribute name="body" value="/WEB-INF/pages/estatisticas/get.jsp" />  
+    </definition>
+    
+    <!-- ESTATISTICAS LIST PAGE -->
+    <definition name="estatisticas.list" extends="base.definition">  
+        <put-attribute name="title" value="Lista de estatisticas" />  
+        <put-attribute name="body" value="/WEB-INF/pages/estatisticas/list.jsp" />  
+    </definition>
+
+</tiles-definitions> 

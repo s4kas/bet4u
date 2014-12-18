@@ -1,0 +1,7 @@
+body {text-align:center; background-color:#333; color:#EEE; font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;}
+.tableHeaderRow {color: #FFF; background-color:#333; font-size: 2em;}
+.tableHeaderCell { }
+.tableRow {color: #EEE; background-color:#333; font-size: 1em;}
+.selectedTableRow {color: #EEE; background-color:#888;}
+.hoverTableRow {color: #EEE; background-color:#999;}
+.botoes {margin-top: 50px;}
