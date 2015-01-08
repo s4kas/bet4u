@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.bmp.bet4u.client.estatisticas.beans.Estatisticas;
 import com.bmp.bet4u.client.estatisticas.beans.Jogo;
-import com.bmp.bet4u.client.estatisticas.beans.ResultadoEpocaJornada;
 import com.bmp.bet4u.client.estatisticas.business.EstatisticasBusiness;
 import com.bmp.bet4u.common.equipa.EquipaBusiness;
 
@@ -27,17 +27,20 @@ public class EstatisticasController {
 	
 	@RequestMapping(method = RequestMethod.POST)
     public String post(@ModelAttribute("jogo") Jogo jogo, Model model) {
-		List<ResultadoEpocaJornada> estatisticas = EstatisticasBusiness.getEstatisticasByJogoOuEquipa(jogo);
+		Estatisticas estatisticas = EstatisticasBusiness.getEstatisticasByJogoOuEquipa(jogo);
 		
 		ObjectMapper mapper = new ObjectMapper();
-		String json = "";
+		String estJson = "";
+		String lmJson = "";
 		try {
-			json = mapper.writeValueAsString(estatisticas);
+			estJson = mapper.writeValueAsString(estatisticas.getEstatisticas());
+			lmJson = mapper.writeValueAsString(estatisticas.getLm());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		model.addAttribute("estatisticas", json);
+		model.addAttribute("estatisticas", estJson);
+		model.addAttribute("lm", lmJson);
 		return "estatisticas.list";
     }
 	

@@ -149,5 +149,12 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		
+		<!-- JRI for R Calls -->
+		<dependency>
+			<groupId>com.github.lucarosellini.rJava</groupId>
+			<artifactId>JRIEngine</artifactId>
+			<version>0.9-7</version>
+		</dependency>
+		
 	</dependencies>	
 </project>

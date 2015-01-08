@@ -33,6 +33,11 @@
 				<h6>Jogos</h6>
 				<div id="games_away"></div>
 			</div>
+			<h3>LM</h3>
+			<div>
+				<h6>LM</h6>
+				<div id="lm_regression"></div>
+			</div>
 		</div>
 	</c:if>
 	<div class="botoes"><button id="voltar">Voltar</button></div>
@@ -52,11 +57,13 @@
 	google.load("visualization", "1", {packages:["corechart"]});
 	
 	var estatisticas = JSON.parse('${estatisticas}');
-	prepareDataForCharts(estatisticas);
+	var lm = JSON.parse('${lm}');
+	prepareDataForCharts(estatisticas, lm);
 	
     google.setOnLoadCallback(drawResultsGoalsVersus);
     google.setOnLoadCallback(drawGoalsMinutesVersus);
     google.setOnLoadCallback(drawGamesVersus);
+    google.setOnLoadCallback(drawLM);
     
     function drawResultsGoalsVersus() {
     	var equipas = $("body").data("equipas");
@@ -138,7 +145,42 @@
     	chart.draw(data, options);
     }
     
-    function prepareDataForCharts(estatisticas) {
+    function drawLM() {
+    	var confCasa = $("body").data("lmConfCasa");
+    	var confFora = $("body").data("lmConfFora");
+    	
+    	var data = new google.visualization.DataTable();
+    	data.addColumn('string', 'Intervalo');
+    	data.addColumn('number', 'Modelo');
+    	data.addColumn('number', 'Minimo');
+    	data.addColumn('number', 'Maximo');
+    	
+    	data.addRows([
+    	  			['Casa', confCasa[0] , confCasa[1], confCasa[2]],
+    	  			['Fora', confFora[0] , confFora[1], confFora[2]]
+    	          ]);
+    	
+    	var options = {
+            	cssClassNames : {
+            		'headerRow': 'tableHeaderRow',
+            		'tableRow': 'tableRow',
+            		'oddTableRow': 'tableRow',
+            		'selectedTableRow': 'selectedTableRow',
+            		'hoverTableRow': 'hoverTableRow',
+            		'headerCell': '',
+            		'tableCell': ''},
+            	width: 750,
+            	height: 200
+            };
+            
+    	var table = new google.visualization.Table(document.getElementById('lm_regression'));
+        table.draw(data, options);
+    }
+    
+    function prepareDataForCharts(estatisticas, lm) {
+    	$("body").data("lmConfCasa", lm.confCasa);
+    	$("body").data("lmConfFora", lm.confFora);
+    	
     	if (estatisticas.length > 0) {
     		$("body").data("equipas", {
     			"equipaCasa":estatisticas[0].pesquisaInicial.equipaCasa.nome,

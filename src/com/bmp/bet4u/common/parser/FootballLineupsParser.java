@@ -64,7 +64,7 @@ public class FootballLineupsParser {
 			for (int j = 0; j < osCasa.size(); j++) {
 				Element oCasa = osCasa.get(j);
 				Element next = oCasa.nextElementSibling();
-				Element nextNext = oCasa.nextElementSibling();
+				Element nextNext = next.nextElementSibling();
 				if (next != null && next.tagName().equalsIgnoreCase("img")
 						&& next.attr("src").contains("goaln.gif")) {
 					continue;
@@ -83,6 +83,9 @@ public class FootballLineupsParser {
 			Element foraEl = els.get(4);
 			Element foraEl4 = foraEl.select("a").first();
 			String foraText = foraEl4.text();
+			if (foraText.trim().equals("")) {
+				foraText = foraEl.select("a").get(1).text();
+			}
 			Equipa eqFora = new Equipa(foraText);
 			resultado.getJogo().setEquipaFora(eqFora);
 			//ocorrencias fora

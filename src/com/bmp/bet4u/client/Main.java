@@ -12,10 +12,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		InglaterraBusiness.parseAndInsertTodasEpocasPremierLeague();
 		PortugalBusiness.parseAndInsertTodasEpocasPrimeiraLiga();
 		HolandaBusiness.parseAndInsertTodasEpocasEredivisie();
-		SueciaBusiness.parseAndInsertTodasEpocasAllsvenskan();
-		InglaterraBusiness.parseAndInsertTodasEpocasPremierLeague();
+		SueciaBusiness.parseAndInsertTodasEpocasAllsvenskan();		
 		EspanhaBusiness.parseAndInsertTodasEpocasLaLiga();
 	}
 }
