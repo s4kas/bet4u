@@ -53,7 +53,7 @@ public class RService {
 				re.parse(String.format("x <- subset(x, equipaCasa=='%s')", equipaCasa), true);
 				re.parseAndEval("fit <- glm (totalGolos~epoca+jornada+equipaFora+pontosCasa+pontosFora, data=x, family='quasipoisson')");
 				
-				String command = String.format("round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaFora='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
+				String command = String.format("pred <- round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaFora='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
 						epoca, jornada, equipaFora, pontosCasa, pontosFora);
 				REXP response = re.parseAndEval(command);
 				result[0] = response.asDoubles()[0];
@@ -66,7 +66,7 @@ public class RService {
 				re.parse(String.format("x <- subset(x, equipaFora=='%s')", equipaFora), true);
 				re.parseAndEval("fit <- glm (totalGolos~epoca+jornada+equipaCasa+pontosCasa+pontosFora, data=x, family='quasipoisson')");
 				
-				String command = String.format("round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaCasa='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
+				String command = String.format("pred <- round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaCasa='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
 						epoca, jornada, equipaCasa, pontosCasa, pontosFora);
 				REXP response = re.parseAndEval(command);
 				result[0] = response.asDoubles()[0];
@@ -75,8 +75,8 @@ public class RService {
 						epoca, jornada, equipaCasa, pontosCasa, pontosFora);
 				re.parseAndEval(command);
 			}
-			REXP upr = re.parseAndEval("round(fit$family$linkinv(e$fit + (1.96 * e$se.fit)),3)");
-			REXP lwr = re.parseAndEval("round(fit$family$linkinv(e$fit - (1.96 * e$se.fit)),3)");
+			REXP upr = re.parseAndEval("round(fit$family$linkinv(e$fit + (qt(.975,fit$df.null) * e$se.fit)),3)");
+			REXP lwr = re.parseAndEval("round(fit$family$linkinv(e$fit - (qt(.975,fit$df.null) * e$se.fit)),3)");
 			
 			result[1] = lwr.asDouble();
 			result[2] = upr.asDouble();
