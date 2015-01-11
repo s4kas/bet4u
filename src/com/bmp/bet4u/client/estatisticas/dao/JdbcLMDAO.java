@@ -9,7 +9,7 @@ public class JdbcLMDAO implements ILMDAO {
 	
 	StringBuffer SELECT_FROM_RESULTADOS = new StringBuffer("SELECT epoca, jornada, equipaCasa, equipaFora, ").
 			append("golosCasa, golosFora ").
-			append("FROM resultados WHERE equipaCasa = ? or equipaFora = ?");
+			append("FROM resultados");
 	
 	private DataSource dataSource;
 	@Override
@@ -18,10 +18,10 @@ public class JdbcLMDAO implements ILMDAO {
 	}
 	
 	@Override
-	public List<ResultadoJornada> getResultadosDaEquipa(Integer equipa) {
+	public List<ResultadoJornada> getResultados() {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		return jdbcTemplate.query(SELECT_FROM_RESULTADOS.toString(), new Integer[] {equipa, equipa},
+		return jdbcTemplate.query(SELECT_FROM_RESULTADOS.toString(),
 				new ResultadoJornadaRowMapper());
 	}	
 	

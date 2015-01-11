@@ -7,6 +7,6 @@ import com.bmp.bet4u.common.IDataAccessObject;
 
 public interface ILMDAO extends IDataAccessObject {
 	
-	public List<ResultadoJornada> getResultadosDaEquipa(Integer equipa);
+	public List<ResultadoJornada> getResultados();
 	
 }

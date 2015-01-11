@@ -24,36 +24,64 @@ public class RService {
 	}
 	
 	public double[] getLinearRegression(List<String> epocas, List<Integer> jornadas, 
-			List<Integer> equipasCasa, List<Integer> equipasFora,
+			List<String> equipasCasa, List<String> equipasFora,
 			List<Integer> totalGolos, List<Integer> pontossCasa, List<Integer> pontossFora,
 			String epoca, Integer jornada, Integer equipaCasa, Integer equipaFora,
-			Integer pontosCasa, Integer pontosFora) {
+			Integer pontosCasa, Integer pontosFora, boolean isCasa) {
 		
 		RList list = new RList();
 		list.put("epoca", new REXPString(epocas.toArray(new String[epocas.size()])));
 		list.put("jornada", new REXPInteger(jornadas.stream().mapToInt(i->i).toArray()));
-		list.put("equipaCasa", new REXPInteger(equipasCasa.stream().mapToInt(i->i).toArray()));
-		list.put("equipaFora", new REXPInteger(equipasFora.stream().mapToInt(i->i).toArray()));
+		list.put("equipaCasa", new REXPString(equipasCasa.toArray(new String[equipasCasa.size()])));
+		list.put("equipaFora", new REXPString(equipasFora.toArray(new String[equipasFora.size()])));
 		list.put("totalGolos", new REXPInteger(totalGolos.stream().mapToInt(i->i).toArray()));
 		list.put("pontosCasa", new REXPInteger(pontossCasa.stream().mapToInt(i->i).toArray()));
 		list.put("pontosFora", new REXPInteger(pontossFora.stream().mapToInt(i->i).toArray()));
 		
-		return getRegression(list, epoca, jornada, equipaCasa, equipaFora, pontosCasa, pontosFora);
+		return getRegression(list, epoca, jornada, equipaCasa, equipaFora, pontosCasa, pontosFora, isCasa);
 	}
 	
 	private double[] getRegression(RList list, String epoca, Integer jornada, Integer equipaCasa, Integer equipaFora,
-			Integer pontosCasa, Integer pontosFora) {
+			Integer pontosCasa, Integer pontosFora, boolean isCasa) {
 		try {
 			REngine re = RService.getSingletion();
 			
+			double[] result = new double[3];
+			
 			re.assign("x", REXP.createDataFrame(list));
-			re.parseAndEval("fit <- glm (totalGolos~epoca+jornada+equipaCasa+equipaFora+pontosCasa+pontosFora, data=x, family='quasipoisson')");
+			if (isCasa) {
+				re.parse(String.format("x <- subset(x, equipaCasa=='%s')", equipaCasa), true);
+				re.parseAndEval("fit <- glm (totalGolos~epoca+jornada+equipaFora+pontosCasa+pontosFora, data=x, family='quasipoisson')");
+				
+				String command = String.format("round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaFora='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
+						epoca, jornada, equipaFora, pontosCasa, pontosFora);
+				REXP response = re.parseAndEval(command);
+				result[0] = response.asDoubles()[0];
+				
+				command = String.format("e <- predict(fit, data.frame(epoca='%s', jornada=%d, equipaFora='%s', pontosCasa=%d, pontosFora=%d), type='link', se.fit = TRUE)",
+						epoca, jornada, equipaFora, pontosCasa, pontosFora);
+				re.parseAndEval(command);
+				
+			} else {
+				re.parse(String.format("x <- subset(x, equipaFora=='%s')", equipaFora), true);
+				re.parseAndEval("fit <- glm (totalGolos~epoca+jornada+equipaCasa+pontosCasa+pontosFora, data=x, family='quasipoisson')");
+				
+				String command = String.format("round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaCasa='%s', pontosCasa=%d, pontosFora=%d), type='response'),3)",
+						epoca, jornada, equipaCasa, pontosCasa, pontosFora);
+				REXP response = re.parseAndEval(command);
+				result[0] = response.asDoubles()[0];
+				
+				command = String.format("e <- predict(fit, data.frame(epoca='%s', jornada=%d, equipaCasa='%s', pontosCasa=%d, pontosFora=%d), type='link', se.fit = TRUE)",
+						epoca, jornada, equipaCasa, pontosCasa, pontosFora);
+				re.parseAndEval(command);
+			}
+			REXP upr = re.parseAndEval("round(fit$family$linkinv(e$fit + (1.96 * e$se.fit)),3)");
+			REXP lwr = re.parseAndEval("round(fit$family$linkinv(e$fit - (1.96 * e$se.fit)),3)");
 			
-			String command = String.format("round(predict(fit, data.frame(epoca='%s', jornada=%d, equipaCasa=%d, equipaFora=%d, pontosCasa=%d, pontosFora=%d), type='response'),3)",
-						epoca, jornada, equipaCasa, equipaFora, pontosCasa, pontosFora);
-			REXP response = re.parseAndEval(command);	
+			result[1] = lwr.asDouble();
+			result[2] = upr.asDouble();
 			
-			return response.asDoubles();
+			return result;
 			
 		} catch (ClassNotFoundException | NoSuchMethodException
 				| IllegalAccessException | InvocationTargetException | REngineException | REXPMismatchException e) {

@@ -21,7 +21,7 @@ public class TestQuerys {
 	public static void main(String ... args) {
 		
 		
-		String data = "select * from resultados where equipaCasa = 10 or equipaFora = 10";
+		String data = "select * from resultados";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(CommonConnection.getDataSource());
 		
@@ -46,7 +46,7 @@ public class TestQuerys {
 		List<Integer> totalGolos = new ArrayList<>();
 		List<Integer> pontosCasa = new ArrayList<>();
 		List<Integer> pontosFora = new ArrayList<>();
-		System.out.println("epoca;jornada;equipaCasa;equipaFora;golosCasa;golosFora;pontosCasa;pontosFora;mediaGCDC;mediaGCDF");
+		System.out.println("epoca;jornada;equipaCasa;equipaFora;golosCasa;golosFora;pontosCasa;pontosFora");
 		for (ResultadoJornada resultado : resultados) {
 			System.out.print(resultado.getEpoca() + ";");epoca.add(resultado.getEpoca());
 			System.out.print(resultado.getJornada() + ";");jornada.add(resultado.getJornada());

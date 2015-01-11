@@ -53,16 +53,15 @@ public class EstatisticasBusiness {
 		if (idEquipaCasa != 0 && idEquipaFora != 0 && !jogo.getEpoca().isEmpty() && jogo.getJornada().intValue() > 0 
 				&& jogo.getPontosCasa().intValue() >= 0 && jogo.getPontosFora().intValue() >= 0) {
 			ILMDAO lmDAO = new JdbcLMDAO();
-			lmDAO.setDataSource(CommonConnection.getDataSource());
+			lmDAO.setDataSource(CommonConnection.getDataSource());		
+			List<ResultadoJornada> resultadosJogos = lmDAO.getResultados();
 			
-			List<ResultadoJornada> resultadosCasa = lmDAO.getResultadosDaEquipa(idEquipaCasa);
-			double[] confCasa = new LMBusiness().getFittedValues(resultadosCasa, jogo.getEpoca(), jogo.getJornada(), idEquipaCasa, 
-					idEquipaFora, jogo.getPontosCasa(), jogo.getPontosFora());
+			double[] confCasa = new LMBusiness().getFittedValues(resultadosJogos, jogo.getEpoca(), jogo.getJornada(), 
+					idEquipaCasa, idEquipaFora, jogo.getPontosCasa(), jogo.getPontosFora(), true);
 			lm.setConfCasa(confCasa);
 			
-			List<ResultadoJornada> resultadosFora = lmDAO.getResultadosDaEquipa(idEquipaFora);
-			double[] confFora = new LMBusiness().getFittedValues(resultadosFora, jogo.getEpoca(), jogo.getJornada(), idEquipaCasa, 
-					idEquipaFora, jogo.getPontosCasa(), jogo.getPontosFora());
+			double[] confFora = new LMBusiness().getFittedValues(resultadosJogos, jogo.getEpoca(), jogo.getJornada(), 
+					idEquipaCasa, idEquipaFora, jogo.getPontosCasa(), jogo.getPontosFora(), false);
 			lm.setConfFora(confFora);
 		}
 		

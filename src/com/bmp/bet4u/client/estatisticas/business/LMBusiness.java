@@ -14,7 +14,7 @@ public class LMBusiness {
 	private RService rService = new RService();
 	
 	public double[] getFittedValues(List<ResultadoJornada> resultados, String epoca, Integer jornada,
-			Integer equipaCasa, Integer equipaFora, Integer pontosCasa, Integer pontosFora) {
+			Integer equipaCasa, Integer equipaFora, Integer pontosCasa, Integer pontosFora, boolean isCasa) {
 		
 		for (ResultadoJornada resultado : resultados) {
 			Integer pontosCasaL = 1, pontosForaL = 1;
@@ -30,23 +30,23 @@ public class LMBusiness {
 		
 		List<String> epocas = new ArrayList<>();
 		List<Integer> jornadas = new ArrayList<>();
-		List<Integer> equipasCasa = new ArrayList<>();
-		List<Integer> equipasFora = new ArrayList<>();
+		List<String> equipasCasa = new ArrayList<>();
+		List<String> equipasFora = new ArrayList<>();
 		List<Integer> totalGolos = new ArrayList<>();
 		List<Integer> pontossCasa = new ArrayList<>();
 		List<Integer> pontossFora = new ArrayList<>();
 		for (ResultadoJornada resultado : resultados) {
 			epocas.add(resultado.getEpoca());
 			jornadas.add(resultado.getJornada());
-			equipasCasa.add(resultado.getEquipaCasa());
-			equipasFora.add(resultado.getEquipaFora());
+			equipasCasa.add(String.valueOf(resultado.getEquipaCasa()));
+			equipasFora.add(String.valueOf(resultado.getEquipaFora()));
 			totalGolos.add(resultado.getGolosCasa() + resultado.getGolosFora());
 			pontossCasa.add(Integer.parseInt(getTotalPontos(resultado.getEpoca(), resultado.getJornada(), resultado.getEquipaCasa())));
 			pontossFora.add(Integer.parseInt(getTotalPontos(resultado.getEpoca(), resultado.getJornada(), resultado.getEquipaFora())));
 		}
 		
 		return rService.getLinearRegression(epocas, jornadas, equipasCasa, equipasFora, totalGolos, pontossCasa, pontossFora,
-				epoca, jornada, equipaCasa, equipaFora, pontosCasa, pontosFora);
+				epoca, jornada, equipaCasa, equipaFora, pontosCasa, pontosFora, isCasa);
 	}
 	
 	private void saveTotalPontos(String epoca, Integer jornada, Integer equipa, Integer pontos) {
